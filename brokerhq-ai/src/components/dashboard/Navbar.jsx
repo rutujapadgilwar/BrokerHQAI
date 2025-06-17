@@ -21,6 +21,9 @@ import {
   Person as PersonIcon,
   Assignment as TasksIcon,
   Menu as MenuIcon,
+  Mail as MailIcon,
+  AccountCircle,
+  More as MoreIcon,
 } from '@mui/icons-material';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -43,24 +46,33 @@ const LogoImage = styled('img')(({ theme }) => ({
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState(3); // Example notification count
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleNotificationMenuOpen = (event) => {
-    setNotificationAnchorEl(event.currentTarget);
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setNotificationAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('demoLoggedIn');
+    localStorage.removeItem('demoOnboardingComplete');
+    navigate('/');
   };
 
   const handleNavigation = (path) => {
@@ -68,189 +80,194 @@ const Navbar = () => {
     handleMenuClose();
   };
 
+  const menuId = 'primary-search-account-menu';
+  const mobileMenuId = 'primary-search-account-menu-mobile';
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+      <MenuItem onClick={() => handleNavigation('/settings')}>Settings</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </Menu>
+  );
+
+  const renderMobileMenu = (
+    <Menu
+      anchorEl={mobileMoreAnchorEl}
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      id={mobileMenuId}
+      keepMounted
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+      open={isMobileMenuOpen}
+      onClose={handleMobileMenuClose}
+    >
+      <MenuItem onClick={handleProfileMenuOpen}>
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="primary-search-account-menu"
+          aria-haspopup="true"
+          color="inherit"
+        >
+          <AccountCircle />
+        </IconButton>
+        <p>Profile</p>
+      </MenuItem>
+    </Menu>
+  );
+
   return (
-    <StyledAppBar position="fixed">
-      <Toolbar>
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
-        
-        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-          <Link 
-            to="/dashboard/properties"
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              textDecoration: 'none',
-              color: 'inherit',
-              padding: 1,
-            }}
-          >
-            <LogoImage 
-              src="/brokerhq_icon.png" 
-              alt="BrokerHQ"
-              loading="eager"
-            />
-          </Link>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title="Watchlist">
+    <>
+      <StyledAppBar position="fixed">
+        <Toolbar>
+          {isMobile && (
             <IconButton
-              component={Link}
-              to="/watchlist"
-              size="small"
-              sx={{
-                color: location.pathname === '/watchlist' ? 'primary.main' : 'inherit',
-                '&:hover': {
-                  bgcolor: theme.palette.action.hover,
-                  boxShadow: theme.shadows[2],
-                  transform: 'translateY(-1px)',
-                },
-                transition: 'all 0.3s ease',
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ mr: 2 }}
+            >
+              BrokerHQ
+              <MenuIcon />
+            </IconButton>
+          )}
+          
+          <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+            <Link 
+              to="/dashboard"
+              style={{ 
+                display: 'flex', 
+                alignItems: 'center',
+                textDecoration: 'none',
+                color: 'inherit',
+                padding: 1,
               }}
             >
-              <WatchlistIcon />
-            </IconButton>
-          </Tooltip>
+              <LogoImage 
+                src="/brokerhq_icon.png" 
+                alt="BrokerHQ"
+                loading="eager"
+              />
+            </Link>
+          </Box>
 
-          <Tooltip title="Tasks">
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Tooltip title="Watchlist">
+              <IconButton
+                component={Link}
+                to="/watchlist"
+                size="small"
+                sx={{
+                  color: location.pathname === '/watchlist' ? 'primary.main' : 'inherit',
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    boxShadow: theme.shadows[2],
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <WatchlistIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Tasks">
+              <IconButton
+                component={Link}
+                to="/tasks"
+                size="small"
+                sx={{
+                  color: location.pathname === '/tasks' ? 'primary.main' : 'inherit',
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    boxShadow: theme.shadows[2],
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <TasksIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Notifications">
+              <IconButton
+                component={Link}
+                to="/alerts"
+                size="small"
+                sx={{
+                  color: location.pathname === '/notifications' ? 'primary.main' : 'inherit',
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    boxShadow: theme.shadows[2],
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <Badge badgeContent={notifications} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Profile">
+              <IconButton
+                onClick={handleProfileMenuOpen}
+                size="small"
+                sx={{
+                  ml: 2,
+                  '&:hover': {
+                    bgcolor: theme.palette.action.hover,
+                    boxShadow: theme.shadows[2],
+                    transform: 'translateY(-1px)',
+                  },
+                  transition: 'all 0.3s ease',
+                }}
+              >
+                <Avatar sx={{ width: 32, height: 32 }}>
+                  <PersonIcon />
+                </Avatar>
+              </IconButton>
+            </Tooltip>
+          </Box>
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-              component={Link}
-              to="/tasks"
-              size="small"
-              sx={{
-                color: location.pathname === '/tasks' ? 'primary.main' : 'inherit',
-                '&:hover': {
-                  bgcolor: theme.palette.action.hover,
-                  boxShadow: theme.shadows[2],
-                  transform: 'translateY(-1px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
+              size="large"
+              aria-label="show more"
+              aria-controls={mobileMenuId}
+              aria-haspopup="true"
+              onClick={(event) => setMobileMoreAnchorEl(event.currentTarget)}
+              color="inherit"
             >
-              <TasksIcon />
+              <MoreIcon />
             </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Notifications">
-            <IconButton
-              onClick={handleNotificationMenuOpen}
-              size="small"
-              sx={{
-                '&:hover': {
-                  bgcolor: theme.palette.action.hover,
-                  boxShadow: theme.shadows[2],
-                  transform: 'translateY(-1px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              <Badge badgeContent={notifications} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Tooltip>
-
-          <Tooltip title="Profile">
-            <IconButton
-              onClick={handleProfileMenuOpen}
-              size="small"
-              sx={{
-                ml: 2,
-                '&:hover': {
-                  bgcolor: theme.palette.action.hover,
-                  boxShadow: theme.shadows[2],
-                  transform: 'translateY(-1px)',
-                },
-                transition: 'all 0.3s ease',
-              }}
-            >
-              <Avatar sx={{ width: 32, height: 32 }}>
-                <PersonIcon />
-              </Avatar>
-            </IconButton>
-          </Tooltip>
-        </Box>
-
-        {/* Profile Menu */}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleMenuClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '&:before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={() => handleNavigation('/profile')}>Profile</MenuItem>
-          <MenuItem onClick={() => handleNavigation('/settings')}>Settings</MenuItem>
-          <MenuItem onClick={() => {
-            localStorage.removeItem('demoLoggedIn');
-            localStorage.removeItem('demoOnboardingComplete');
-            window.location.reload();
-          }}>Logout</MenuItem>
-        </Menu>
-
-        {/* Notifications Menu */}
-        <Menu
-          anchorEl={notificationAnchorEl}
-          open={Boolean(notificationAnchorEl)}
-          onClose={handleMenuClose}
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              overflow: 'visible',
-              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-              mt: 1.5,
-              '&:before': {
-                content: '""',
-                display: 'block',
-                position: 'absolute',
-                top: 0,
-                right: 14,
-                width: 10,
-                height: 10,
-                bgcolor: 'background.paper',
-                transform: 'translateY(-50%) rotate(45deg)',
-                zIndex: 0,
-              },
-            },
-          }}
-          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        >
-          <MenuItem onClick={handleMenuClose}>New property alert</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Price change notification</MenuItem>
-          <MenuItem onClick={handleMenuClose}>New message received</MenuItem>
-        </Menu>
-      </Toolbar>
-    </StyledAppBar>
+          </Box>
+        </Toolbar>
+      </StyledAppBar>
+      {renderMobileMenu}
+      {renderMenu}
+    </>
   );
 };
 

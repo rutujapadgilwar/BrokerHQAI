@@ -13,7 +13,7 @@ const SEATTLE_CENTER = {
 const MapContainer = styled(Paper)(({ theme }) => ({
   width: '100%',
   height: '100%',
-  minHeight: '500px',
+  minHeight: '700px',
   borderRadius: theme.shape.borderRadius * 2,
   overflow: 'hidden',
   position: 'relative',
@@ -103,8 +103,8 @@ const MapView = ({ locations = [], onMarkerClick }) => {
         ref={mapRef}
         sx={{
           width: '100%',
-          height: '80%',
-          minHeight: '300px'
+          height: '100%',
+          minHeight: '500px'
         }}
       />
     </MapContainer>

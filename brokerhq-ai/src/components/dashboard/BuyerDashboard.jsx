@@ -5,12 +5,6 @@ import {
   Typography,
   Button,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Checkbox,
-  FormControlLabel,
   Paper,
   Table,
   TableBody,
@@ -22,35 +16,19 @@ import {
   IconButton,
   Stack,
   Avatar,
-  Divider,
-  Grid,
-  Card,
-  CardContent,
-  Badge,
 } from '@mui/material';
 import {
-  Star as StarIcon,
-  StarBorder as StarBorderIcon,
+  Star as StarBorderIcon,
   Search as SearchIcon,
   FileDownload as ExportIcon,
   Map as MapIcon,
   ViewList as ListIcon,
-  Phone as PhoneIcon,
-  Email as EmailIcon,
-  Info as InfoIcon,
-  TrendingUp as TrendingUpIcon,
-  LocationOn as LocationIcon,
   Business as BusinessIcon,
-  Schedule as ScheduleIcon,
   AttachMoney as MoneyIcon,
-  Handshake as HandshakeIcon,
-  Home as HomeIcon,
-  Person as PersonIcon,
-  SquareFoot as SquareFootIcon,
-  Percent as PercentIcon,
+  TrendingUp as TrendingUpIcon,
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
-import { propertiesData } from '../../data/mockData';
+import { buyerData } from '../../data/mockData';
 import FilterPanel from '../filters/FilterPanel';
 import MapPanel from '../map/MapPanel';
 import DashboardNavigation from '../common/DashboardNavigation';
@@ -76,22 +54,6 @@ const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
   }),
 }));
 
-const PriorityChip = styled(Chip)(({ theme, priority }) => ({
-  ...(priority === 'high' && {
-    backgroundColor: theme.palette.error.light,
-    color: theme.palette.error.main,
-    animation: 'pulse 2s infinite',
-  }),
-  ...(priority === 'medium' && {
-    backgroundColor: theme.palette.warning.light,
-    color: theme.palette.warning.main,
-  }),
-  ...(priority === 'low' && {
-    backgroundColor: theme.palette.success.light,
-    color: theme.palette.success.main,
-  }),
-}));
-
 const ActionButton = styled(Button)(({ theme, variant }) => ({
   minWidth: 'auto',
   padding: '6px 12px',
@@ -110,13 +72,6 @@ const ActionButton = styled(Button)(({ theme, variant }) => ({
     color: theme.palette.success.contrastText,
     '&:hover': {
       backgroundColor: theme.palette.success.dark,
-    },
-  }),
-  ...(variant === 'nurture' && {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.primary.contrastText,
-    '&:hover': {
-      backgroundColor: theme.palette.primary.dark,
     },
   }),
   ...(variant === 'details' && {
@@ -145,33 +100,7 @@ const ScoreDisplay = styled(Box)(({ theme, score }) => ({
   },
 }));
 
-const AddressDisplay = styled(Box)(({ theme }) => ({
-  lineHeight: 1.4,
-  '& .address-main': {
-    color: theme.palette.text.primary,
-    fontWeight: 600,
-    marginBottom: '2px',
-  },
-  '& .address-sub': {
-    color: theme.palette.grey[600],
-    fontSize: '0.85rem',
-  },
-}));
-
-const OccupancyDisplay = styled(Box)(({ theme }) => ({
-  textAlign: 'center',
-  '& .occupancy-value': {
-    fontSize: '1.2rem',
-    fontWeight: 700,
-    marginBottom: '2px',
-  },
-  '& .occupancy-label': {
-    fontSize: '0.75rem',
-    color: theme.palette.grey[600],
-  },
-}));
-
-const ProspectingDashboard = ({ viewMode, setViewMode }) => {
+const BuyerDashboard = ({ viewMode, setViewMode }) => {
   const [filters, setFilters] = useState({});
   const navigate = useNavigate();
 
@@ -180,40 +109,38 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
   };
 
   const handleStarToggle = (id) => {
-    console.log('Toggle star for property:', id);
+    console.log('Toggle star for buyer:', id);
   };
 
-  const handlePropertyClick = (propertyId) => {
-    console.log('Property clicked:', propertyId);
-    console.log('Navigating to:', `/property/${propertyId}`);
-    navigate(`/property/${propertyId}`);
+  const handleBuyerClick = (buyerId) => {
+    navigate(`/buyer/${buyerId}`);
   };
 
-  const getPriorityLabel = (sellProb) => {
-    if (sellProb >= 75) return 'high';
-    if (sellProb >= 50) return 'medium';
+  const getPriorityLabel = (interestScore) => {
+    if (interestScore >= 75) return 'high';
+    if (interestScore >= 50) return 'medium';
     return 'low';
   };
 
-  const filteredData = propertiesData.filter(property => {
+  const filteredData = buyerData.filter(buyer => {
     // Apply filters based on the FilterPanel state
     if (filters.scoreRange) {
       const [min, max] = filters.scoreRange;
-      if (property.sellProb < min || property.sellProb > max) return false;
+      if (buyer.interestScore < min || buyer.interestScore > max) return false;
     }
     return true;
   });
 
-  const highCount = propertiesData.filter(p => p.sellProb >= 75).length;
-  const mediumCount = propertiesData.filter(p => p.sellProb >= 50 && p.sellProb < 75).length;
-  const lowCount = propertiesData.filter(p => p.sellProb < 50).length;
+  const highCount = buyerData.filter(b => b.interestScore >= 75).length;
+  const mediumCount = buyerData.filter(b => b.interestScore >= 50 && b.interestScore < 75).length;
+  const lowCount = buyerData.filter(b => b.interestScore < 50).length;
 
   return (
     <Box sx={{ display: 'flex', height: '100%', width: '100%' }}>
       {/* Left Sidebar - Using FilterPanel */}
       <Box sx={{ width: 300, p: 2, flexShrink: 0 }}>
         <FilterPanel 
-          selectedRole="properties" 
+          selectedRole="buyer" 
           onFilterChange={handleFilterChange}
         />
       </Box>
@@ -235,7 +162,7 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
         >
           <Box sx={{ display: 'flex', gap: 3.75, alignItems: 'center' }}>
             <Typography variant="body2" sx={{ color: 'grey.600' }}>
-              {filteredData.length} properties found
+              {filteredData.length} buyers found
             </Typography>
             <Box sx={{ display: 'flex', gap: 2.5 }}>
               <Box sx={{ textAlign: 'center' }}>
@@ -271,8 +198,8 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
               onClick={() => setViewMode('list')}
               sx={{
                 ...(viewMode === 'list' && {
-                  bgcolor: 'primary.main',
-                  '&:hover': { bgcolor: 'primary.dark' },
+                  bgcolor: 'warning.main',
+                  '&:hover': { bgcolor: 'warning.dark' },
                 }),
               }}
             >
@@ -284,8 +211,8 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
               onClick={() => setViewMode('map')}
               sx={{
                 ...(viewMode === 'map' && {
-                  bgcolor: 'primary.main',
-                  '&:hover': { bgcolor: 'primary.dark' },
+                  bgcolor: 'warning.main',
+                  '&:hover': { bgcolor: 'warning.dark' },
                 }),
               }}
             >
@@ -303,28 +230,20 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>★</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Property</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Owner</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Size</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Occupancy</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Sell Probability</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Buyer Name</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Investment Type</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Target Size</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Budget</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Interest Score</TableCell>
                     <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredData.map((property) => (
-                    <StyledTableRow 
-                      key={property.id} 
-                      priority={getPriorityLabel(property.sellProb)}
-                      onClick={() => handlePropertyClick(property.id)}
-                      sx={{ cursor: 'pointer' }}
-                    >
+                  {filteredData.map((buyer) => (
+                    <StyledTableRow key={buyer.id} priority={getPriorityLabel(buyer.interestScore)}>
                       <TableCell>
                         <IconButton
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleStarToggle(property.id);
-                          }}
+                          onClick={() => handleStarToggle(buyer.id)}
                           sx={{ color: 'grey.400' }}
                         >
                           <StarBorderIcon />
@@ -332,62 +251,53 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <HomeIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
-                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', cursor: 'pointer' }} onClick={(event) => {
-                            event.stopPropagation();
-                            handlePropertyClick(property.id);
-                          }}>
-                            {property.address}
+                          <BusinessIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', cursor: 'pointer' }} onClick={() => handleBuyerClick(buyer.id)}>
+                            {buyer.buyerName}
                           </Typography>
                         </Box>
                       </TableCell>
                       <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <PersonIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
-                          <Typography variant="body2" sx={{ color: 'grey.600' }}>
-                            {property.owner}
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <SquareFootIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                            {property.sf.toLocaleString()} SF
-                          </Typography>
-                        </Box>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {property.occupancy}%
+                        <Typography variant="body2" sx={{ color: 'grey.600' }}>
+                          {buyer.targetAssetTypes}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <ScoreDisplay score={property.sellProb}>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {buyer.preferredDealSize}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <MoneyIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {buyer.budget || 'N/A'}
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <ScoreDisplay score={buyer.interestScore}>
                           <Typography className="score-value">
-                            {property.sellProb}%
+                            {buyer.interestScore || '0'}
                           </Typography>
                           <Typography className="score-label">
-                            Sell Probability
+                            Interest Score
                           </Typography>
                         </ScoreDisplay>
                       </TableCell>
                       <TableCell>
                         <Stack direction="row" spacing={0.75} flexWrap="wrap">
-                          {property.sellProb >= 75 && (
+                          {buyer.interestScore >= 75 && (
                             <ActionButton variant="urgent" size="small">
                               Urgent Call
                             </ActionButton>
                           )}
-                          {property.sellProb >= 50 && property.sellProb < 75 && (
+                          {buyer.interestScore >= 50 && buyer.interestScore < 75 && (
                             <ActionButton variant="contact" size="small">
                               Follow Up
                             </ActionButton>
                           )}
-                          <ActionButton variant="details" size="small" onClick={(event) => {
-                            event.stopPropagation();
-                            handlePropertyClick(property.id);
-                          }}>
+                          <ActionButton variant="details" size="small" onClick={() => handleBuyerClick(buyer.id)}>
                             Details
                           </ActionButton>
                         </Stack>
@@ -412,11 +322,11 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
               }}
             >
               <Typography variant="body2" sx={{ color: 'grey.600' }}>
-                Showing {filteredData.length} of {propertiesData.length} results
+                Showing {filteredData.length} of {buyerData.length} results
               </Typography>
               <Button
                 variant="contained"
-                sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' } }}
+                sx={{ bgcolor: 'warning.main', '&:hover': { bgcolor: 'warning.dark' } }}
               >
                 Load More
               </Button>
@@ -425,7 +335,7 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
         ) : (
           /* Map View */
           <Box sx={{ flex: 1, p: 1, bgcolor: 'white', width: '100%' }}>
-            <MapPanel selectedRole="properties" />
+            <MapPanel selectedRole="buyer" />
           </Box>
         )}
       </Box>
@@ -433,4 +343,4 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
   );
 };
 
-export default ProspectingDashboard; 
+export default BuyerDashboard; 
