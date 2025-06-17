@@ -38,7 +38,7 @@ const LoginPage = ({ onLoginSuccess }) => {
     setError(''); // Clear any previous errors
 
     // Demo login logic
-    if (email === 'abc' && password === 'abc') {
+    if (email === 'BrokerHQ' && password === 'BrokerHQ') {
       const isFirstLogin = !localStorage.getItem('demoOnboardingComplete');
       
       if (onLoginSuccess) {
