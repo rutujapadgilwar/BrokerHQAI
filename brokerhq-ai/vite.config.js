@@ -32,7 +32,8 @@ export default defineConfig({
       'prop-types',
       'react-is',
       '@mui/x-date-pickers',
-      '@mui/x-date-pickers/AdapterDateFns'
+      '@mui/x-date-pickers/AdapterDateFns',
+      'axios'
     ],
     exclude: []
   },
@@ -57,7 +58,8 @@ export default defineConfig({
           vendor: ['react', 'react-dom'],
           mui: ['@mui/material', '@mui/icons-material', '@mui/system'],
           emotion: ['@emotion/react', '@emotion/styled', '@emotion/cache'],
-          datefns: ['date-fns', '@mui/x-date-pickers', '@mui/x-date-pickers/AdapterDateFns']
+          datefns: ['date-fns', '@mui/x-date-pickers', '@mui/x-date-pickers/AdapterDateFns'],
+          axios: ['axios']
         },
       },
     },
