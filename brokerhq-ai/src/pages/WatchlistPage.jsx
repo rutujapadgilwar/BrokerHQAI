@@ -59,7 +59,7 @@ const mockData = [
     scoreBand: 'A',
     leaseExpiry: true,
     permitActivity: 'Active',
-    imageUrl: '../public/property.jpeg',
+    imageUrl: '/property.jpeg',
   },
   {
     id: 2,
@@ -72,7 +72,7 @@ const mockData = [
     scoreBand: 'B',
     leaseExpiry: false,
     permitActivity: 'None',
-    imageUrl: '../public/property.jpeg',
+    imageUrl: '/property.jpeg',
   },
   {
     id: 3,
@@ -85,7 +85,7 @@ const mockData = [
     scoreBand: 'A',
     leaseExpiry: true,
     permitActivity: 'Pending',
-    imageUrl: '../public/property.jpeg',
+    imageUrl: '/property.jpeg',
   },
   {
     id: 4,
@@ -98,7 +98,7 @@ const mockData = [
     scoreBand: 'C',
     leaseExpiry: false,
     permitActivity: 'Active',
-    imageUrl: '../public/property.jpeg',
+    imageUrl: '/property.jpeg',
   },
   {
     id: 5,
@@ -111,7 +111,7 @@ const mockData = [
     scoreBand: 'B',
     leaseExpiry: true,
     permitActivity: 'None',
-    imageUrl: '../public/property.jpeg',
+    imageUrl: '/property.jpeg',
   },
 ];
 

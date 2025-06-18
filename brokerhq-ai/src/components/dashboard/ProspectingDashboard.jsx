@@ -57,14 +57,20 @@ import DashboardNavigation from '../common/DashboardNavigation';
 
 // Styled components
 const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
+    transform: 'translateY(-1px)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
   },
   ...(priority === 'high' && {
     borderLeft: `4px solid ${theme.palette.error.main}`,
     backgroundColor: theme.palette.error.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.error.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
   ...(priority === 'medium' && {
@@ -72,6 +78,8 @@ const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
     backgroundColor: theme.palette.warning.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.warning.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
 }));

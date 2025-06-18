@@ -17,6 +17,8 @@ import AlertsPage from './components/dashboard/AlertsPage';
 import SettingsPage from './components/dashboard/SettingsPage';
 import TasksPage from './components/dashboard/TasksPage';
 import PropertyDetailsPage from './pages/PropertyDetailsPage';
+import TenantDetailsPage from './pages/TenantDetailsPage';
+import BuyerDetailsPage from './pages/BuyerDetailsPage';
 import MainDashboard from './components/dashboard/MainDashboard';
 import TenantDashboard from './components/dashboard/TenantDashboard';
 import ProspectingDashboard from './components/dashboard/ProspectingDashboard';
@@ -149,8 +151,8 @@ function App() {
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/property/:id" element={<PropertyDetailsPage />} />
-        <Route path="/tenant/:id" element={<PropertyDetailsPage />} />
-        <Route path="/buyer/:id" element={<PropertyDetailsPage />} />
+        <Route path="/tenant/:id" element={<TenantDetailsPage />} />
+        <Route path="/buyer/:id" element={<BuyerDetailsPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
       {isLoggedIn && <Chatbot />}

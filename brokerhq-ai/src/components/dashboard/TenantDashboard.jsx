@@ -52,14 +52,20 @@ import MapPanel from '../map/MapPanel';
 
 // Styled components
 const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
+    transform: 'translateY(-1px)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
   },
   ...(priority === 'urgent' && {
     borderLeft: `4px solid ${theme.palette.error.main}`,
     backgroundColor: theme.palette.error.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.error.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
   ...(priority === 'hot' && {
@@ -67,6 +73,8 @@ const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
     backgroundColor: theme.palette.warning.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.warning.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
 }));
@@ -429,17 +437,25 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                 </TableHead>
                 <TableBody>
                   {filteredData.map((tenant) => (
-                    <StyledTableRow key={tenant.id} priority={tenant.priority}>
+                    <StyledTableRow 
+                      key={tenant.id} 
+                      priority={tenant.priority}
+                      onClick={() => handleTenantClick(tenant.id)}
+                      sx={{ cursor: 'pointer' }}
+                    >
                       <TableCell>
                         <IconButton
-                          onClick={() => handleStarToggle(tenant.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStarToggle(tenant.id);
+                          }}
                           sx={{ color: tenant.starred ? 'warning.main' : 'grey.400' }}
                         >
                           {tenant.starred ? <StarIcon /> : <StarBorderIcon />}
                         </IconButton>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', cursor: 'pointer' }} onClick={() => handleTenantClick(tenant.id)}>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main' }}>
                           {tenant.company}
                         </Typography>
                       </TableCell>
@@ -523,16 +539,33 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                       <TableCell>
                         <Stack direction="row" spacing={0.75} flexWrap="wrap">
                           {tenant.priority === 'urgent' && (
-                            <ActionButton variant="urgent" size="small">
+                            <ActionButton 
+                              variant="urgent" 
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle urgent call action
+                              }}
+                            >
                               Urgent Call
                             </ActionButton>
                           )}
                           {tenant.priority === 'hot' && (
-                            <ActionButton variant="contact" size="small">
+                            <ActionButton 
+                              variant="contact" 
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle follow up action
+                              }}
+                            >
                               Follow Up
                             </ActionButton>
                           )}
-                          <ActionButton variant="details" size="small" onClick={() => handleTenantClick(tenant.id)}>
+                          <ActionButton variant="details" size="small" onClick={(e) => {
+                            e.stopPropagation();
+                            handleTenantClick(tenant.id);
+                          }}>
                             Details
                           </ActionButton>
                         </Stack>

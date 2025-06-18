@@ -35,14 +35,20 @@ import DashboardNavigation from '../common/DashboardNavigation';
 
 // Styled components
 const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
+  cursor: 'pointer',
+  transition: 'all 0.2s ease-in-out',
   '&:hover': {
     backgroundColor: theme.palette.action.hover,
+    transform: 'translateY(-1px)',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
   },
   ...(priority === 'high' && {
     borderLeft: `4px solid ${theme.palette.error.main}`,
     backgroundColor: theme.palette.error.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.error.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
   ...(priority === 'medium' && {
@@ -50,6 +56,8 @@ const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
     backgroundColor: theme.palette.warning.light + '10',
     '&:hover': {
       backgroundColor: theme.palette.warning.light + '20',
+      transform: 'translateY(-1px)',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
 }));
@@ -240,10 +248,18 @@ const BuyerDashboard = ({ viewMode, setViewMode }) => {
                 </TableHead>
                 <TableBody>
                   {filteredData.map((buyer) => (
-                    <StyledTableRow key={buyer.id} priority={getPriorityLabel(buyer.interestScore)}>
+                    <StyledTableRow 
+                      key={buyer.id} 
+                      priority={getPriorityLabel(buyer.interestScore)}
+                      onClick={() => handleBuyerClick(buyer.id)}
+                      sx={{ cursor: 'pointer' }}
+                    >
                       <TableCell>
                         <IconButton
-                          onClick={() => handleStarToggle(buyer.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleStarToggle(buyer.id);
+                          }}
                           sx={{ color: 'grey.400' }}
                         >
                           <StarBorderIcon />
@@ -252,7 +268,7 @@ const BuyerDashboard = ({ viewMode, setViewMode }) => {
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <BusinessIcon sx={{ color: 'grey.500', fontSize: '1.2rem' }} />
-                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main', cursor: 'pointer' }} onClick={() => handleBuyerClick(buyer.id)}>
+                          <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main' }}>
                             {buyer.buyerName}
                           </Typography>
                         </Box>
@@ -288,16 +304,37 @@ const BuyerDashboard = ({ viewMode, setViewMode }) => {
                       <TableCell>
                         <Stack direction="row" spacing={0.75} flexWrap="wrap">
                           {buyer.interestScore >= 75 && (
-                            <ActionButton variant="urgent" size="small">
+                            <ActionButton 
+                              variant="urgent" 
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle urgent call action
+                              }}
+                            >
                               Urgent Call
                             </ActionButton>
                           )}
                           {buyer.interestScore >= 50 && buyer.interestScore < 75 && (
-                            <ActionButton variant="contact" size="small">
+                            <ActionButton 
+                              variant="contact" 
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                // Handle follow up action
+                              }}
+                            >
                               Follow Up
                             </ActionButton>
                           )}
-                          <ActionButton variant="details" size="small" onClick={() => handleBuyerClick(buyer.id)}>
+                          <ActionButton 
+                            variant="details" 
+                            size="small" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleBuyerClick(buyer.id);
+                            }}
+                          >
                             Details
                           </ActionButton>
                         </Stack>
