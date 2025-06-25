@@ -362,7 +362,7 @@ const MainDashboard = () => {
                 transform: 'translateX(4px)',
               } 
             }}
-            onClick={() => handleNavigation('/dashboard/properties')}
+            onClick={() => handleNavigation('/tenant')}
           >
             <FlagIcon sx={{ fontSize: 16 }} />
             <span>Prospecting</span>

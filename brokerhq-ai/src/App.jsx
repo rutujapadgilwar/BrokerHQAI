@@ -155,7 +155,7 @@ function App() {
         <Route path="/buyer/:id" element={<BuyerDetailsPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
-      {isLoggedIn && <Chatbot />}
+      {/* {isLoggedIn && <Chatbot />} */}
     </ThemeProvider>
   );
 }

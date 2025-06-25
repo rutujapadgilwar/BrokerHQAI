@@ -38,7 +38,6 @@ import {
   Delete as DeleteIcon,
   Share as ShareIcon
 } from '@mui/icons-material';
-import { watchlistService } from '../../services/watchlistService';
 import { propertiesData, tenantData, buyerData } from '../../data/mockData';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -201,29 +200,29 @@ const DashboardTable = ({ selectedRole, filters = {} }) => {
     setPage(0);
   };
 
-  const handleWatchlistToggle = async (itemId) => {
-    try {
-      const item = data.find(i => i.id === itemId);
-      if (!item) return;
+  // const handleWatchlistToggle = async (itemId) => {
+  //   try {
+  //     const item = data.find(i => i.id === itemId);
+  //     if (!item) return;
 
-      if (watchlist.has(itemId)) {
-        await watchlistService.removeFromWatchlist(userId, itemId);
-        setWatchlist(prev => {
-          const next = new Set(prev);
-          next.delete(itemId);
-          return next;
-        });
-      } else {
-        await watchlistService.addToWatchlist(userId, {
-          ...item,
-          type: selectedRole
-        });
-        setWatchlist(prev => new Set([...prev, itemId]));
-      }
-    } catch (error) {
-      console.error('Error toggling watchlist:', error);
-    }
-  };
+  //     if (watchlist.has(itemId)) {
+  //       await watchlistService.removeFromWatchlist(userId, itemId);
+  //       setWatchlist(prev => {
+  //         const next = new Set(prev);
+  //         next.delete(itemId);
+  //         return next;
+  //       });
+  //     } else {
+  //       await watchlistService.addToWatchlist(userId, {
+  //         ...item,
+  //         type: selectedRole
+  //       });
+  //       setWatchlist(prev => new Set([...prev, itemId]));
+  //     }
+  //   } catch (error) {
+  //     console.error('Error toggling watchlist:', error);
+  //   }
+  // };
 
   const handleMenuClick = (event, item) => {
     setAnchorEl(event.currentTarget);

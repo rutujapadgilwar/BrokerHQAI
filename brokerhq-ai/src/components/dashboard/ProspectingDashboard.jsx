@@ -421,7 +421,7 @@ const ProspectingDashboard = ({ viewMode, setViewMode }) => {
             >
               <Typography variant="body2" sx={{ color: 'grey.600' }}>
                 Showing {filteredData.length} of {propertiesData.length} results
-              </Typography>
+      </Typography>
               <Button
                 variant="contained"
                 sx={{ bgcolor: 'primary.main', '&:hover': { bgcolor: 'primary.dark' } }}
