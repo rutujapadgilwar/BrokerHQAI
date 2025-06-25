@@ -18,6 +18,10 @@ import {
   CardHeader,
   IconButton,
   Container,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import {
   Business as BusinessIcon,
@@ -165,6 +169,7 @@ const ContactPerson = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
   borderRadius: 12,
   marginBottom: theme.spacing(2),
+  position: 'relative',
 }));
 
 const CommissionHighlight = styled(Box)(({ theme }) => ({
@@ -189,6 +194,23 @@ const CTAButton = styled(Button)(({ theme, variant }) => ({
   '&:hover': {
     transform: 'translateY(-2px)',
     boxShadow: variant === 'secondary' ? '0 8px 25px rgba(102, 126, 234, 0.4)' : '0 8px 25px rgba(255, 107, 107, 0.4)',
+  },
+}));
+
+const MutualConnectionButton = styled(Button)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(2),
+  right: theme.spacing(2),
+  background: 'linear-gradient(45deg, #38a169, #2f855a)',
+  color: 'white',
+  fontSize: '0.8rem',
+  fontWeight: 600,
+  textTransform: 'none',
+  borderRadius: 16,
+  padding: '2px 12px',
+  minWidth: 0,
+  '&:hover': {
+    background: 'linear-gradient(45deg, #2f855a, #38a169)',
   },
 }));
 
@@ -220,6 +242,7 @@ const mockTenantData = {
       bestContact: 'Tuesday-Thursday, 10-12 PM',
       keyConcern: 'Maintaining culture during rapid growth',
       avatar: 'SK',
+      mutualConnection: 'Jonh Chen',
     },
     {
       name: 'Mike Chen',
@@ -232,6 +255,7 @@ const mockTenantData = {
       bestContact: 'Monday-Wednesday, 2-4 PM',
       keyConcern: 'Managing costs while scaling efficiently',
       avatar: 'MC',
+      mutualConnection: 'Patric Chen',
     },
   ],
   urgencyTriggers: [
@@ -276,6 +300,8 @@ const TenantDetailsPage = () => {
   const navigate = useNavigate();
   const [tenant, setTenant] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mutualDialogOpen, setMutualDialogOpen] = useState(false);
+  const [selectedMutual, setSelectedMutual] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -609,25 +635,41 @@ const TenantDetailsPage = () => {
                 <CardContent>
                   {tenant.contacts.map((contact, index) => (
                     <ContactPerson key={index}>
+                      {contact.mutualConnection && (
+                        <MutualConnectionButton
+                          onClick={() => {
+                            setSelectedMutual({
+                              name: contact.mutualConnection,
+                              // Mock info for demo; replace with real data if available
+                              email: contact.mutualConnectionEmail || 'mutual@example.com',
+                              phone: contact.mutualConnectionPhone || '(555) 123-4567',
+                              company: contact.mutualConnectionCompany || 'Acme Corp',
+                            });
+                            setMutualDialogOpen(true);
+                          }}
+                        >
+                          {`🤝 Mutual: ${contact.mutualConnection}`}
+                        </MutualConnectionButton>
+                      )}
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                         <Avatar sx={{ width: 60, height: 60, bgcolor: '#667eea', fontWeight: 600, fontSize: '1.2rem' }}>
                           {contact.avatar}
                         </Avatar>
                         <Box>
                           <Typography sx={{ fontWeight: 700, fontSize: '1.1rem', mb: 0.5 }}>
-                            {contact.name}, {contact.role}
+                            {contact.name}
                           </Typography>
                           <Typography variant="body2" sx={{ color: '#64748b', mb: 1 }}>
-                            {contact.authority}
+                            {contact.role}
                           </Typography>
                         </Box>
                       </Box>
                       <Typography variant="body2" sx={{ lineHeight: 1.4 }}>
-                        📞 {contact.phone} | ✉️ {contact.email}<br />
-                        🎯 <strong>Focus:</strong> {contact.focus}<br />
+                        📞 {contact.phone} • ✉️ {contact.email}<br />
+                        🎯 <strong>Authority:</strong> {contact.authority}<br />
                         💡 <strong>Style:</strong> {contact.style}<br />
                         ⏰ <strong>Best Contact:</strong> {contact.bestContact}<br />
-                        🔑 <strong>Key Concern:</strong> "{contact.keyConcern}"
+                        {contact.linkedin ? `🔗 <strong>LinkedIn:</strong> ${contact.linkedin}` : `📧 <strong>Email:</strong> ${contact.emailResponse}`}
                       </Typography>
                     </ContactPerson>
                   ))}
@@ -705,6 +747,22 @@ const TenantDetailsPage = () => {
           </Grid>
         </Grid>
       </Container>
+      <Dialog open={mutualDialogOpen} onClose={() => setMutualDialogOpen(false)}>
+        <DialogTitle>Mutual Connection</DialogTitle>
+        <DialogContent>
+          {selectedMutual && (
+            <Box sx={{ minWidth: 260 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>{selectedMutual.name}</Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Email:</strong> {selectedMutual.email}</Typography>
+              <Typography variant="body2" sx={{ mb: 0.5 }}><strong>Phone:</strong> {selectedMutual.phone}</Typography>
+              <Typography variant="body2"><strong>Company:</strong> {selectedMutual.company}</Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setMutualDialogOpen(false)} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
