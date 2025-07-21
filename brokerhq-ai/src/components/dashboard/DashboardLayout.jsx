@@ -17,6 +17,23 @@ import ProspectingDashboard from './ProspectingDashboard';
 import TenantDashboard from './TenantDashboard';
 import BuyerDashboard from './BuyerDashboard';
 import Navbar from './Navbar';
+import { styled } from '@mui/material/styles';
+
+const GradientButton = styled(Button)(({ theme }) => ({
+  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+  color: 'white',
+  textTransform: 'none',
+  fontWeight: 500,
+  padding: '10px 24px',
+  borderRadius: theme.shape.borderRadius * 2,
+  boxShadow: theme.shadows[2],
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    background: `linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.secondary.dark} 90%)`,
+    boxShadow: theme.shadows[4],
+    transform: 'translateY(-1px)',
+  },
+}));
 
 const DashboardLayout = () => {
   const location = useLocation();
@@ -107,20 +124,12 @@ const DashboardLayout = () => {
               startAdornment: <SearchIcon sx={{ mr: 1, color: 'grey.500' }} />,
             }}
           />
-          <Button
-            variant="contained"
+          <GradientButton
             startIcon={<ExportIcon />}
-            sx={{ 
-              bgcolor: getCurrentRole() === 'properties' ? 'primary.main' : 
-                      getCurrentRole() === 'tenant' ? 'success.main' : 'warning.main',
-              '&:hover': { 
-                bgcolor: getCurrentRole() === 'properties' ? 'primary.dark' : 
-                        getCurrentRole() === 'tenant' ? 'success.dark' : 'warning.dark' 
-              } 
-            }}
+            sx={{ minWidth: 150 }}
           >
             {getExportButtonText()}
-          </Button>
+          </GradientButton>
         </Box>
       </Box>
 
