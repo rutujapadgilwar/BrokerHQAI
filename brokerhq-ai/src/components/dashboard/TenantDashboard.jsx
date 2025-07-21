@@ -68,15 +68,7 @@ const StyledTableRow = styled(TableRow)(({ theme, priority }) => ({
       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
     },
   }),
-  ...(priority === 'hot' && {
-    borderLeft: `4px solid ${theme.palette.warning.main}`,
-    backgroundColor: theme.palette.warning.light + '10',
-    '&:hover': {
-      backgroundColor: theme.palette.warning.light + '20',
-      transform: 'translateY(-1px)',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    },
-  }),
+  // No highlight for 'hot' or 'warm'
 }));
 
 const PriorityChip = styled(Chip)(({ theme, priority }) => ({
@@ -195,6 +187,11 @@ const mockTenantData = [
     budgetLevel: 'Premium',
     relationship: 'Warm Intro',
     relationshipDetail: 'Sarah Kim (CEO)',
+    headCountGrowthNumber: '+50',
+    jobsGrowth: '+12%',
+    revenueGrowthNumber: '+$2M',
+    financeGrowth: '+18%',
+    totalEmployeeCount: 350,
   },
   {
     id: 2,
@@ -214,6 +211,11 @@ const mockTenantData = [
     budgetLevel: 'Market',
     relationship: 'Previous Contact',
     relationshipDetail: 'Contacted 6mo ago',
+    headCountGrowthNumber: '+30',
+    jobsGrowth: '+8%',
+    revenueGrowthNumber: '+$1.2M',
+    financeGrowth: '+15%',
+    totalEmployeeCount: 120,
   },
   {
     id: 3,
@@ -233,6 +235,11 @@ const mockTenantData = [
     budgetLevel: 'Premium',
     relationship: 'Warm Intro',
     relationshipDetail: 'Mike Chen (CTO)',
+    headCountGrowthNumber: '+40',
+    jobsGrowth: '+10%',
+    revenueGrowthNumber: '+$1.5M',
+    financeGrowth: '+16%',
+    totalEmployeeCount: 200,
   },
   {
     id: 4,
@@ -241,7 +248,7 @@ const mockTenantData = [
     industry: 'Digital Marketing',
     location: 'Seattle, WA',
     subLocation: 'Fremont',
-    expansionScore: 65,
+    expansionScore: 45,
     priority: 'warm',
     currentSpace: '8K SF',
     targetSpace: '12-15K SF',
@@ -252,6 +259,11 @@ const mockTenantData = [
     budgetLevel: 'Market',
     relationship: 'Cold Prospect',
     relationshipDetail: 'No previous contact',
+    headCountGrowthNumber: '+10',
+    jobsGrowth: '+5%',
+    revenueGrowthNumber: '+$400K',
+    financeGrowth: '+12%',
+    totalEmployeeCount: 60,
   },
   {
     id: 5,
@@ -271,6 +283,11 @@ const mockTenantData = [
     budgetLevel: 'Premium',
     relationship: 'Warm Intro',
     relationshipDetail: 'Lisa Park (COO)',
+    headCountGrowthNumber: '+35',
+    jobsGrowth: '+11%',
+    revenueGrowthNumber: '+$900K',
+    financeGrowth: '+17%',
+    totalEmployeeCount: 150,
   },
 ];
 
@@ -326,6 +343,23 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
   const urgentCount = mockTenantData.filter(t => t.priority === 'urgent').length;
   const hotCount = mockTenantData.filter(t => t.priority === 'hot').length;
   const warmCount = mockTenantData.filter(t => t.priority === 'warm').length;
+
+  // Add GradientButton styled component
+  const GradientButton = styled(Button)(({ theme }) => ({
+    background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
+    color: 'white',
+    textTransform: 'none',
+    fontWeight: 500,
+    padding: '10px 24px',
+    borderRadius: theme.shape.borderRadius * 2,
+    boxShadow: theme.shadows[2],
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      background: `linear-gradient(45deg, ${theme.palette.primary.dark} 30%, ${theme.palette.secondary.dark} 90%)`,
+      boxShadow: theme.shadows[4],
+      transform: 'translateY(-1px)',
+    },
+  }));
 
   return (
     <Box sx={{ display: 'flex', height: '100%', width: '100%' }}>
@@ -384,19 +418,25 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
             </Box>
           </Box>
           <Stack direction="row" spacing={1.25}>
-            <Button
+            <GradientButton
               variant={viewMode === 'list' ? 'contained' : 'outlined'}
               startIcon={<ListIcon />}
               onClick={() => setViewMode('list')}
               sx={{
-                ...(viewMode === 'list' && {
-                  bgcolor: 'success.main',
-                  '&:hover': { bgcolor: 'success.dark' },
+                ...(viewMode !== 'list' && {
+                  background: 'transparent',
+                  color: 'success.main',
+                  boxShadow: 'none',
+                  border: '1px solid',
+                  borderColor: 'success.main',
+                  '&:hover': {
+                    background: 'rgba(76, 175, 80, 0.08)',
+                  },
                 }),
               }}
             >
               List View
-            </Button>
+            </GradientButton>
             <Button
               variant={viewMode === 'map' ? 'contained' : 'outlined'}
               startIcon={<MapIcon />}
@@ -421,18 +461,32 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
               <Table stickyHeader sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>★</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Company</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Industry</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Location</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Current Space</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Target Space</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Expansion Score</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Lease Timing</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Key Driver</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Budget</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Relationship</TableCell>
-                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>Actions</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>COMPANY</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700' }}>LOCATION</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>MOVE PROBABILITY</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>LEASE EXPIRATION</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                          HEAD COUNT GROWTH
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'grey.500', fontSize: '0.7rem' }}>
+                          (6 MONTHS)
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                        <Typography variant="body2" sx={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                          REVENUE GROWTH
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: 'grey.500', fontSize: '0.7rem' }}>
+                          (12 MO REVENUE)
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>CONTACTS</TableCell>
+                    <TableCell sx={{ bgcolor: 'grey.50', fontWeight: 600, color: 'grey.700', textAlign: 'center' }}>ACTION</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -444,23 +498,10 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell>
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleStarToggle(tenant.id);
-                          }}
-                          sx={{ color: tenant.starred ? 'warning.main' : 'grey.400' }}
-                        >
-                          {tenant.starred ? <StarIcon /> : <StarBorderIcon />}
-                        </IconButton>
-                      </TableCell>
-                      <TableCell>
                         <Typography variant="body2" sx={{ fontWeight: 600, color: 'primary.main' }}>
                           {tenant.company}
                         </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ color: 'grey.600' }}>
+                        <Typography variant="caption" sx={{ color: 'grey.600' }}>
                           {tenant.industry}
                         </Typography>
                       </TableCell>
@@ -474,32 +515,17 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
                         <ScoreDisplay score={tenant.expansionScore}>
                           <Typography className="score-value">
                             {tenant.expansionScore}
                           </Typography>
                           <Typography className="score-label">
-                            Expansion Score
+                            Move Probability
                           </Typography>
                         </ScoreDisplay>
                       </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {tenant.currentSpace}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {tenant.targetSpace}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ color: 'grey.600' }}>
-                          {tenant.spacePressure}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}>
                         <Chip
                           label={tenant.leaseTiming}
                           size="small"
@@ -511,22 +537,25 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                           {tenant.timingDetail}
                         </Typography>
                       </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ 
-                          color: tenant.priority === 'urgent' ? 'error.main' :
-                                 tenant.priority === 'hot' ? 'warning.main' : 'success.main',
-                          fontWeight: tenant.priority === 'urgent' ? 600 : 500,
-                        }}>
-                          {tenant.keyDriver}
-                        </Typography>
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                            {tenant.headCountGrowthNumber || '+0'}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: 'grey.600' }}>
+                            {tenant.jobsGrowth || '+0%'}
+                          </Typography>
+                        </Box>
                       </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={`💰 ${tenant.budgetLevel}`}
-                          size="small"
-                          color={getBudgetColor(tenant.budgetLevel)}
-                          sx={{ fontWeight: 500 }}
-                        />
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                            {tenant.revenueGrowthNumber || '+$0'}
+                          </Typography>
+                          <Typography variant="caption" sx={{ color: 'grey.600' }}>
+                            {tenant.financeGrowth || '+0%'}
+                          </Typography>
+                        </Box>
                       </TableCell>
                       <TableCell>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -536,8 +565,8 @@ const TenantDashboard = ({ viewMode, setViewMode }) => {
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>
-                        <Stack direction="row" spacing={0.75} flexWrap="wrap">
+                      <TableCell sx={{ textAlign: 'center' }}>
+                        <Stack direction="row" spacing={0.75} flexWrap="wrap" justifyContent="center">
                           {tenant.priority === 'urgent' && (
                             <ActionButton 
                               variant="urgent" 
